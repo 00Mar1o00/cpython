@@ -1,0 +1,66 @@
+import pygame
+import sys
+
+# Initialize Pygame
+pygame.init()
+
+# Screen dimensions
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("CodeQuest Mario")
+
+# Colors
+WHITE = (255, 255, 255)
+BLUE = (0, 0, 255)
+
+# Load images
+mario_image = pygame.image.load('mario.png')
+mario_rect = mario_image.get_rect()
+mario_rect.topleft = (100, 500)
+
+# Game variables
+gravity = 0.6
+mario_speed = 5
+jump_speed = -12
+mario_y_velocity = 0
+ground_level = 500
+
+# Main game loop
+running = True
+while running:
+    screen.fill(WHITE)
+    
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        mario_rect.x -= mario_speed
+    if keys[pygame.K_RIGHT]:
+        mario_rect.x += mario_speed
+    if keys[pygame.K_SPACE] and mario_rect.bottom >= ground_level:
+        mario_y_velocity = jump_speed
+    
+    # Apply gravity
+    if mario_rect.bottom < ground_level:
+        mario_y_velocity += gravity
+    else:
+        mario_y_velocity = 0
+        mario_rect.bottom = ground_level
+    
+    # Update Mario's position
+    mario_rect.y += mario_y_velocity
+
+    # Draw Mario
+    screen.blit(mario_image, mario_rect)
+
+    # Update display
+    pygame.display.flip()
+    
+    # Cap the frame rate
+    pygame.time.Clock().tick(60)
+
+pygame.quit()
+sys.exit()
